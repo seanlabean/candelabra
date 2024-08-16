@@ -1,5 +1,8 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import StockInput from './StockInput';
+import Results from './Results';
+import logo from '../assets/logo.svg';
+import '../App.css';
 
 function App() {
   return (
