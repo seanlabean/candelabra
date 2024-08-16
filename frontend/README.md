@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+`npm` is required to run this project. A guide to installing `nvm` and thereby `npm` on Windows can be found [here](https://www.freecodecamp.org/news/nvm-for-windows-how-to-download-and-install-node-version-manager-in-windows-10/)
+
 ## Available Scripts
 
 In the project directory, you can run:
