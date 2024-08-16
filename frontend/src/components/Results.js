@@ -1,4 +1,5 @@
 import React from 'react';
+import Plot from './Plot';
 
 function Results({ data }) {
     return (
