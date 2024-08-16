@@ -28,4 +28,7 @@ yarn-error.log*
 # python
 **/*.pyc
 
+# databases
+**/*.db
+
 **/*.csv
