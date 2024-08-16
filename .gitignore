@@ -25,4 +25,7 @@ yarn-error.log*
 **/package-lock.json
 **/package.json
 
+# python
+**/*.pyc
+
 **/*.csv
