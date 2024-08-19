@@ -19,7 +19,7 @@ function App() {
 
   return (
     <div className="App">
-        <h1>Stock Prediction App</h1>
+        <h1>🕯️candelabra🕯️</h1>
         <StockInput onSubmit={fetchData} />
         {results && <Results data={results} />}
     </div>
