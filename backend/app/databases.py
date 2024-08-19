@@ -16,3 +16,4 @@ class StockData(db.Model):
     lag_5 = db.Column(db.Float)
     rolling_mean_5 = db.Column(db.Float)
     rolling_std_5 = db.Column(db.Float)
+

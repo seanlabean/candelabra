@@ -10,6 +10,7 @@ candelabra/
 │   │   ├── __init__.py        # Initialize Flask app and routes
 │   │   ├── routes.py          # Define API routes
 │   │   ├── models.py          # Placeholder for future ML models
+        ├── databases.py       # Define local databases (SQLite)
 │   │   └── data_processing.py # Data gathering & preprocessing funcs
 │   ├── venv/                  # Virtual environment (optional)
 │   ├── run.py                 # Entry point to run the Flask app
