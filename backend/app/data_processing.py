@@ -7,8 +7,13 @@ def fetch_stock_data(symbol, period="1mo"):
     return response.history(period=period)
 
 def normalize_data(df, columns):
-    df[columns] = (df[columns] - df[columns].mean()) / df[columns].std()
-    return df
+    mean = df[columns].mean()
+    std = df[columns].std()
+    df[columns] = (df[columns] - mean) / std
+    return df, mean, std
+
+def denormalize_prediction(prediction, mean, std):
+    return (prediction * std) + mean
 
 def create_lag_features(df, lags, column='Close'):
     for lag in range(1, lags + 1):
@@ -20,22 +25,10 @@ def create_rolling_features(df, window=5, column='Close'):
     df[f'rolling_std_{window}'] = df[column].rolling(window=window).std()
     return df
 
-def get_preprocess_store_data(symbol, period):
-    # TODO: add a check here to look at what data we already have in 
-    # sqlite, if we need to grab new data from yf do it, if not
-    # just pull from db.
-
-    stock_data = fetch_stock_data(symbol, period)
-
-    # Preprocessing
-    stock_data = normalize_data(stock_data, ['Open', 'High', 'Low', 'Close', 'Volume'])
-    stock_data = create_lag_features(stock_data, lags=5)
-    stock_data = create_rolling_features(stock_data)
-    stock_data.dropna(inplace=True)
-
+def store_data_in_db(symbol, data):
     try:
         # Store in SQLite
-        for index, row in stock_data.iterrows():
+        for index, row in data.iterrows():
             stock_record = StockData(
                 symbol=symbol,
                 date=index.strftime('%Y-%m-%d'),
@@ -57,4 +50,19 @@ def get_preprocess_store_data(symbol, period):
         db.session.commit()
     except Exception as e:
         db.session.rollback()
+
+def get_preprocess_store_data(symbol, period):
+    # TODO: add a check here to look at what data we already have in 
+    # sqlite, if we need to grab new data from yf do it, if not
+    # just pull from db.
+
+    stock_data = fetch_stock_data(symbol, period)
+
+    # Preprocessing
+    stock_data, mean, std = normalize_data(stock_data, ['Open', 'High', 'Low', 'Close', 'Volume'])
+    stock_data = create_lag_features(stock_data, lags=5)
+    stock_data = create_rolling_features(stock_data)
+    stock_data.dropna(inplace=True)
+    store_data_in_db(symbol, stock_data)
+
     return stock_data
