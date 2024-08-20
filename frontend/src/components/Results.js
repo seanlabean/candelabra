@@ -2,12 +2,11 @@ import React from 'react';
 import Plot from './Plot';
 
 function Results({ data }) {
+    const yKs = ["Close"];
     return (
         <div className="results">
             <h2>Stock Data</h2>
-            <Plot data={data} xKey="Date" yKey="Close" title="Closing Prices" />
-            <Plot data={data} xKey="Date" yKey="rolling_mean_5" title="5-Day Rolling Mean" />
-            <Plot data={data} xKey="Date" yKey="rolling_std_5" title="5-Day Rolling Std Dev" />
+            <Plot data={data} xKey="Date" yKeys={yKs} title="Closing Prices" />
         </div>
     );
 }

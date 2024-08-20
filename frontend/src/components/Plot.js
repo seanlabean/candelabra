@@ -1,7 +1,7 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-function Plot({ data, xKey, yKey, title }) {
+function Plot({ data, xKey, yKeys, title }) {
     return (
         <div>
             <h3>{title}</h3>
@@ -12,7 +12,15 @@ function Plot({ data, xKey, yKey, title }) {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey={yKey} stroke="#8884d8" activeDot={{ r: 8}} />
+                    {yKeys.map((yKey, index) => (
+                        <Line
+                            key={index}
+                            type="monotone"
+                            dataKey={yKey}
+                            stroke={yKey.color}
+                            activeDot={{ r: 8 }}
+                        />
+                    ))}
                 </LineChart>
             </ResponsiveContainer>
         </div>
