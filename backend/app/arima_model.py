@@ -14,6 +14,8 @@ def difference_data(df, column):
     return df
 
 def train_arima_model(df, column, order):
+    df.index = pd.to_datetime(df.index)  # Convert index to DateTimeIndex if not already
+    df = df.asfreq('D')  # Set frequency to daily ('D'), or another appropriate frequency
     model = ARIMA(df[column], order=order)
     model_fit = model.fit()
     return model_fit
