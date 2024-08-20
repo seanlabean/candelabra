@@ -11,14 +11,32 @@ def get_stock_data_and_jsonify():
     # just pull from db.
     data = request.json
     symbol = data.get('symbol')
-    period = data.get('period', '1mo')
+    period = data.get('period', '6mo')
+    steps = int(request.json.get('steps', 5))
     try:
-        stock_data = get_preprocess_store_data(symbol, period)
+        stock_data = fetch_stock_data(symbol, period)
+        stock_data, mean, std = normalize_data(stock_data, ['Open', 'High', 'Low', 'Close', 'Volume'])
+        stock_data = create_lag_features(stock_data, lags=5)
+        stock_data = create_rolling_features(stock_data)
+        stock_data.dropna(inplace=True)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+    # Assume the best order is already known or retrained
+    #best_pdq = hyperparameter_tuning(stock_data, 'Close')
+    #print(best_pdq)
+    best_pdq = (30, 3, 4)  # For simplicity; should ideally be fetched from previous training
+    column_to_fit = 'Close' # Assumed to be close, maybe mutable later
+    mean = mean.loc[column_to_fit]
+    std = std.loc[column_to_fit]
+    model_fit = train_arima_model(stock_data, 'Close', best_pdq)
+    predictions = make_prediction(model_fit, steps)
+    predictions.name="Close"
+
+    df = pd.concat([stock_data, predictions])
+    df.fillna(0, inplace=True)
     # Convert to JSON for front end display
-    result = stock_data.to_dict(orient='records')
+    result = df.to_dict(orient='records')
     return jsonify(result)
 
 @main.route('/api/train_arima', methods=['POST'])
@@ -44,7 +62,7 @@ def predict_arima():
     stock_data.dropna(inplace=True)
 
     # Assume the best order is already known or retrained
-    best_pdq = (1, 1, 1)  # For simplicity; should ideally be fetched from previous training
+    best_pdq = (10, 2, 4)  # For simplicity; should ideally be fetched from previous training
     column_to_fit = 'Close' # Assumed to be close, maybe mutable later
     mean = mean.loc[column_to_fit]
     std = std.loc[column_to_fit]
