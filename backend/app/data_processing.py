@@ -3,29 +3,52 @@ import yfinance as yf
 from .databases import StockData, db
 
 def fetch_stock_data(symbol, period="1mo"):
+    """
+    Given a stock symbol, return 1 month (default) of stock data
+    from Yahoo Finance API.
+    """
     response = yf.Ticker(symbol)
     return response.history(period=period)
 
 def normalize_data(df, columns):
+    """
+    Z-score nomralization (standardization) 
+    Returns a pandas dataframe with mean 0 and standard 
+    deviation of 1, as well as the original mean and std.
+    """
     mean = df[columns].mean()
     std = df[columns].std()
     df[columns] = (df[columns] - mean) / std
     return df, mean, std
 
 def denormalize(value, mean, std):
+    """
+    Inverse of normalize_data.
+    """
     return (value * std) + mean
 
 def create_lag_features(df, lags, column='Close'):
+    """
+    Generate lag features for a given dataframe.
+    """
     for lag in range(1, lags + 1):
         df[f'lag_{lag}'] = df[column].shift(lag)
     return df
 
 def create_rolling_features(df, window=5, column='Close'):
+    """
+    Generate rolling mean and standard deviation over 
+    5 day (default) windows.
+    """
     df[f'rolling_mean_{window}'] = df[column].rolling(window=window).mean()
     df[f'rolling_std_{window}'] = df[column].rolling(window=window).std()
     return df
 
 def store_data_in_db(symbol, data):
+    """
+    Store stock data in SQLite instance. Rollback and 
+    continue if failure occurs.
+    """
     try:
         # Store in SQLite
         for index, row in data.iterrows():

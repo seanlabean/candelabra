@@ -19,6 +19,8 @@ def get_stock_data_and_jsonify():
         stock_data = create_lag_features(stock_data, lags=5)
         stock_data = create_rolling_features(stock_data)
         stock_data.dropna(inplace=True)
+        # Move Later vvv store data in db
+        store_data_in_db(symbol, stock_data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
@@ -63,6 +65,8 @@ def predict_arima():
     stock_data = create_lag_features(stock_data, lags=5)
     stock_data = create_rolling_features(stock_data)
     stock_data.dropna(inplace=True)
+    # Move Later vvv store data in db
+    store_data_in_db(symbol, stock_data)
 
     # Assume the best order is already known or retrained
     best_pdq = (10, 2, 4)  # For simplicity; should ideally be fetched from previous training

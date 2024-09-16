@@ -4,6 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 def create_app():
+    """
+    Initialize Flask app and SQLite database.
+    """
     app = Flask(__name__)
 
     # Configure SQLite database

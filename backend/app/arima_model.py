@@ -10,10 +10,16 @@ def check_stationarity(timeseries):
     return result[1] <= 0.05
 
 def difference_data(df, column):
+    """
+    Generate difference data, used for stationarity testing.
+    """
     df[f'{column}_diff'] = df[column].diff().dropna()
     return df
 
 def train_arima_model(df, column, order):
+    """
+    Fit data from a dataframe to an ARIMA model.
+    """
     df.index = pd.to_datetime(df.index)  # Convert index to DateTimeIndex if not already
     df = df.asfreq('D')  # Set frequency to daily ('D'), or another appropriate frequency
     model = ARIMA(df[column], order=order)
@@ -21,6 +27,10 @@ def train_arima_model(df, column, order):
     return model_fit
 
 def hyperparameter_tuning(df, column):
+    """
+    Iterative tuning for hyperparameter search. Expensive, as each
+    iteration requires a new call to fit the model.
+    """
     p = d = q = range(0, 3)
     pdq = [(x,y,z) for x in p for y in d for z in q]
     best_aic = float("inf")
@@ -36,4 +46,7 @@ def hyperparameter_tuning(df, column):
     return best_pdq
 
 def make_prediction(model_fit, steps):
+    """
+    Forecast data some number of steps out.
+    """
     return model_fit.forecast(steps=steps)
