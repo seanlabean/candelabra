@@ -12,8 +12,8 @@ def normalize_data(df, columns):
     df[columns] = (df[columns] - mean) / std
     return df, mean, std
 
-def denormalize_prediction(prediction, mean, std):
-    return (prediction * std) + mean
+def denormalize(value, mean, std):
+    return (value * std) + mean
 
 def create_lag_features(df, lags, column='Close'):
     for lag in range(1, lags + 1):

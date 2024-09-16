@@ -11,7 +11,7 @@ def get_stock_data_and_jsonify():
     # just pull from db.
     data = request.json
     symbol = data.get('symbol')
-    period = data.get('period', '6mo')
+    period = data.get('period', '1mo')
     steps = int(request.json.get('steps', 5))
     try:
         stock_data = fetch_stock_data(symbol, period)
@@ -25,13 +25,16 @@ def get_stock_data_and_jsonify():
     # Assume the best order is already known or retrained
     #best_pdq = hyperparameter_tuning(stock_data, 'Close')
     #print(best_pdq)
-    best_pdq = (30, 3, 4)  # For simplicity; should ideally be fetched from previous training
+    best_pdq = (10, 3, 4)  # For simplicity; should ideally be fetched from previous training
     column_to_fit = 'Close' # Assumed to be close, maybe mutable later
     mean = mean.loc[column_to_fit]
     std = std.loc[column_to_fit]
     model_fit = train_arima_model(stock_data, 'Close', best_pdq)
     predictions = make_prediction(model_fit, steps)
     predictions.name="Close"
+    
+    predictions = denormalize(predictions, mean, std)
+    stock_data = denormalize(stock_data, mean, std)
 
     df = pd.concat([stock_data, predictions])
     df.fillna(0, inplace=True)
@@ -69,6 +72,6 @@ def predict_arima():
     model_fit = train_arima_model(stock_data, 'Close', best_pdq)
     predictions = make_prediction(model_fit, steps)
 
-    predictions = [denormalize_prediction(p, mean, std) for p in predictions.tolist()]
+    predictions = [denormalize(p, mean, std) for p in predictions.tolist()]
 
     return jsonify({'symbol': symbol, 'predictions': predictions})
