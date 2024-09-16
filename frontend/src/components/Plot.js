@@ -1,6 +1,16 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
+
+/**
+ * Renders a line chart with multiple data series.
+ *
+ * @param {Array} data - The data to be plotted. Each object represents a data point.
+ * @param {string} xKey - The key used for x-axis values.
+ * @param {Array} yKeys - Array of objects representing the data series for y-axis values, each with a 'color' property.
+ * @param {string} title - The title of the chart.
+ * @returns {JSX.Element} A responsive line chart component.
+ */
 function Plot({ data, xKey, yKeys, title }) {
     const formatYAxis = (tick) => tick.toFixed(2);
     return (
