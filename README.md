@@ -1,6 +1,9 @@
 # candelabra
 visually driven stock analysis powered by live data and machine learning
 
+## Requirements
+candelabra uses the Flask web framework as its backend and a nodejs frontend. Required python libraries include `sqlalchemy`, `pandas`, and `yfinance`.
+
 ## Organization
 ```
 candelabra/
@@ -10,7 +13,7 @@ candelabra/
 │   │   ├── __init__.py           # Initialize Flask app and routes
 │   │   ├── routes.py             # Define API routes
 │   │   ├── arima_model.py        # ARIMA predictive ML model
-        ├── databases.py          # Define local databases (SQLite)
+|   |   ├── databases.py          # Define local databases (SQLite)
 │   │   └── data_processing.py    # Data gathering & preprocessing funcs
 │   ├── venv/                     # Virtual environment (optional)
 │   ├── run.py                    # Entry point to run the Flask app
@@ -23,7 +26,7 @@ candelabra/
 │   │   │   ├── App.js            # Main React component
 │   │   │   ├── StockInput.js     # Component for inputting stock symbol
 │   │   │   ├── Results.js        # Component to display/plot results
-            ├── ARIMAPredictor.js # Component to display model results
+|   |   |   ├── ARIMAPredictor.js # Component to display model results
 |   |   |   └── Plot.js           # Component to define plot
 │   │   ├── App.css               # Styles for React components
 │   │   └── index.js              # Entry point for React
@@ -32,6 +35,9 @@ candelabra/
 │
 └── README.md                     # Project overview and setup instructs
 ```
+
+## Running candelabra
+`flask run` in the `backend/` directory is sufficient to instantiate candelabra's backend. `npm start` (after an `npm install` of course) in the `frontend/` directory will kick off candelabra's frontend and open a webpage at localhost:3000 by default.
 
 ## Philosophy 
 
